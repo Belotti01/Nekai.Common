@@ -197,6 +197,8 @@ public static class NekaiLogs
 
     public static void EnableMetrics(string? endpoint = null)
     {
+        if(_logMetrics)
+            return; // Already enabled.
         _logMetrics = true;
         _metricsEndpoint = endpoint;
         RebuildLoggers();
