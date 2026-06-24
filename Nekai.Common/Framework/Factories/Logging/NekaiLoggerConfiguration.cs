@@ -10,13 +10,15 @@ public sealed class NekaiLoggerConfiguration
 	public string OutputFilePathTemplate { get; private set; } = Path.Combine("Logs", "Logs.json");
 	public bool LogToConsole { get; set; } = false;
 	public bool LogToFile { get; set; } = false;
+    public bool LogMetrics { get; set; } = false;
 	public bool UseFormatter { get; private set; } = false;
 	public string StringFormat { get; private set; } = "{Timestamp:HH:mm:ss} [{Level:u4}] {Message:lj}{NewLine}{Exception}";
 	public ITextFormatter Formatter { get; private set; } = new CompactJsonFormatter();
 	public LogEventLevel MinimumConsoleLogLevel { get; set; } = LogEventLevel.Information;
 	public LogEventLevel MinimumFileLogLevel { get; set; } = LogEventLevel.Information;
-
-	public NekaiLoggerConfiguration WithConsoleOutput()
+    public string MetricsEndpoint { get; set; } = "http://localhost:4317";
+	
+    public NekaiLoggerConfiguration WithConsoleOutput()
 	{
 		LogToConsole = true;
 		return this;
@@ -95,4 +97,12 @@ public sealed class NekaiLoggerConfiguration
 		UseFormatter = useFormatter;
 		return this;
 	}
+    
+    public NekaiLoggerConfiguration WithMetricsLogging(string? endpoint = null)
+    {
+        LogMetrics = true;
+        if(endpoint is not null)
+            MetricsEndpoint = endpoint;
+        return this;
+    }
 }

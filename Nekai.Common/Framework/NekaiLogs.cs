@@ -13,7 +13,9 @@ namespace Nekai.Common;
 public static class NekaiLogs
 {
 	private static readonly Lock _lock = new();
-
+    private static bool _logMetrics = false;
+    private static string? _metricsEndpoint;
+    
 	/// <summary>
 	/// Factory used to generate the <see cref="NekaiLogs"/>' <see cref="ILogger"/> instances.
 	/// </summary>
@@ -56,7 +58,8 @@ public static class NekaiLogs
 
 			return field;
 		}
-	}
+        private set => field = value;
+    }
 
 	/// <summary>
 	/// Thread-safe instance of <see cref="ILogger"/> scoped to the currently running program. Serializes logs into
@@ -78,7 +81,8 @@ public static class NekaiLogs
 			}
 			return field;
 		}
-	}
+        private set => field = value;
+    }
 
 	/// <summary>
 	/// Thread-safe instance of <see cref="ILogger"/> that writes exclusively to the Console.
@@ -98,7 +102,8 @@ public static class NekaiLogs
 			}
 			return field;
 		}
-	}
+        private set => field = value;
+    }
 
 	private static bool _TryInstantiateGlobalLogger([NotNullWhen(true)] ref ILogger? logger, string? logFilePathTemplate)
 	{
@@ -112,6 +117,11 @@ public static class NekaiLogs
 			{
 				LogToConsole = true
 			};
+
+            if(_logMetrics)
+            {
+                config.WithMetricsLogging(_metricsEndpoint);
+            }
 
 			if(logFilePathTemplate is not null)
 			{
@@ -184,4 +194,18 @@ public static class NekaiLogs
 			.ToArray();
 		return fileLogs;
 	}
+
+    public static void EnableMetrics(string? endpoint = null)
+    {
+        _logMetrics = true;
+        _metricsEndpoint = endpoint;
+        RebuildLoggers();
+    }
+
+    public static void RebuildLoggers()
+    {
+        Shared = null!;
+        Program = null!;
+        Console = null!;
+    }
 }

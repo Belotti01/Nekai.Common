@@ -24,6 +24,11 @@ public sealed class NekaiLoggerFactory
 			serilogConfig.WriteTo.Sink<NekaiConsoleLogEventSink>(config.MinimumConsoleLogLevel);
 		}
 
+        if(config.LogMetrics)
+        {
+            serilogConfig.WriteTo.OpenTelemetry();
+        }
+
 		if(config.LogToFile)
 		{
 			PathString path = PathString.Parse(config.OutputFilePathTemplate);
