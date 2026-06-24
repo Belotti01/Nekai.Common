@@ -37,8 +37,4 @@ public static class ObjectExtensions
 	{
 		return obj.ToStringOrNull() ?? "";
 	}
-
-	/// <inheritdoc cref="Intrinsics.IsDefault{T}"/>
-	public static bool IsDefault<T>(this T value)
-		=>  Intrinsics.IsDefault(value);
 }

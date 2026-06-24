@@ -117,32 +117,31 @@ public class ArgumentsReader
 					break;
 			}
 
-			if(lastKey is not null)
-			{
-				// Makes sure to skip eventual additional spaces
-				while(i < span.Length && span[i] == ' ' && span[i + 1] is ' ' or '"' or '\'')
-				{
-					i++;
-				}
+            if(lastKey is null)
+                continue;
+            
+            // Makes sure to skip eventual additional spaces
+            while(i < span.Length && span[i] == ' ' && span[i + 1] is ' ' or '"' or '\'')
+            {
+                i++;
+            }
 
-				wrapper = span[i];
-				endIndex = i;
-				do
-				{
-					++endIndex;
-				} while(endIndex < span.Length && span[endIndex] != wrapper.Value || span[endIndex - 1] == '\\');
-				lastValue = _ParseValue(span[i..endIndex]);
+            wrapper = span[i];
+            endIndex = i;
+            do
+            {
+                ++endIndex;
+            } while(endIndex < span.Length && span[endIndex] != wrapper.Value || span[endIndex - 1] == '\\');
+            lastValue = _ParseValue(span[i..endIndex]);
 
-				if(parameters.ContainsKey(lastKey))
-					parameters[lastKey] = lastValue;
-				else
-					parameters.Add(lastKey ?? "", lastValue);
-				lastKey = null;
-				lastValue = null;
-				i = endIndex;
-				continue;
-			}
-		}
+            if(parameters.ContainsKey(lastKey))
+                parameters[lastKey] = lastValue;
+            else
+                parameters.Add(lastKey ?? "", lastValue);
+            lastKey = null;
+            lastValue = null;
+            i = endIndex;
+        }
 
 		if(lastKey is not null)
 		{
